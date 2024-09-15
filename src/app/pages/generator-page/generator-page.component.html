@@ -58,30 +58,36 @@
     <mat-card-actions>
       <button
         mat-raised-button
-        color="primary"
         (click)="generate()"
         [disabled]="!generatorForm.form.valid"
       >
-        Generate URLs and QR Codes
+        <mat-icon> qr_code </mat-icon>
+        Genereer
       </button>
 
-      <div>
-        <button mat-raised-button (click)="addEntry()">
-          <mat-icon> add </mat-icon>
-          Add new letter
-        </button>
+      <button
+        mat-icon-button
+        (click)="addEntry()"
+        matTooltip="Voeg een nieuw karakter toe"
+      >
+        <mat-icon> add </mat-icon>
+      </button>
 
-        <button mat-raised-button (click)="triggerFileInput()">
-          <mat-icon>upload</mat-icon> Import from CSV
-        </button>
-        <input
-          type="file"
-          #fileInput
-          (change)="onFileSelected($event)"
-          accept=".csv"
-          style="display: none"
-        />
-      </div>
+      <button
+        mat-icon-button
+        (click)="triggerFileInput()"
+        matTooltip="Gebruik de configuratie van een CSV bestand"
+      >
+        <mat-icon>upload</mat-icon>
+      </button>
+
+      <input
+        type="file"
+        #fileInput
+        (change)="onFileSelected($event)"
+        accept=".csv"
+        style="display: none"
+      />
     </mat-card-actions>
   </mat-card-content>
 </mat-card>

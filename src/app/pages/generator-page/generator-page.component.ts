@@ -6,6 +6,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDivider } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 import { QRCodeModule } from 'angularx-qrcode';
 import { LocalStorageHintEntriesKey } from './generator-page.models';
 
@@ -29,6 +31,7 @@ interface Entry {
     MatIconModule,
     MatDivider,
     MatExpansionModule,
+    MatTooltipModule,
   ],
   templateUrl: './generator-page.component.html',
   styleUrl: './generator-page.component.scss',
@@ -98,7 +101,6 @@ export class GeneratorPageComponent implements OnInit {
         // Construct the URL
         const url = `${window.location.origin}/hint/${urlEncoded}`;
 
-
         return { url: url, name: data.name };
       } catch (error) {
         console.error('Error encoding data:', error);
@@ -106,8 +108,11 @@ export class GeneratorPageComponent implements OnInit {
       }
     });
 
-    if(!fromLocalStorage){
-      localStorage.setItem(LocalStorageHintEntriesKey, JSON.stringify(this.entries));
+    if (!fromLocalStorage) {
+      localStorage.setItem(
+        LocalStorageHintEntriesKey,
+        JSON.stringify(this.entries)
+      );
     }
   }
 

@@ -3,13 +3,17 @@
     <mat-card-title>Admin paneel: Genereer QR codes en URLs</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <form (ngSubmit)="generate()" #generatorForm="ngForm">
+    <form #generatorForm="ngForm">
       @for (entry of entries; track $index) {
-      <div>
-        <h6>Letter {{ $index + 1 }}</h6>
-        <button mat-icon-button>
-          <mat-icon> delete </mat-icon>
-        </button>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> Positie {{ $index + 1 }} </mat-panel-title>
+          <button mat-icon-button (click)="removeEntry($index)">
+            <mat-icon> delete </mat-icon>
+          </button>
+        </mat-expansion-panel-header>
+
         <mat-form-field appearance="fill">
           <mat-label>Naam</mat-label>
           <textarea
@@ -28,20 +32,8 @@
             required
           ></textarea>
         </mat-form-field>
-
         <mat-form-field appearance="fill">
-          <mat-label>Letter positie</mat-label>
-          <input
-            matInput
-            [(ngModel)]="entry.letterIndex"
-            name="letterIndex{{ $index }}"
-            required
-          />
-          <mat-hint>De posities beginnen bij 1!</mat-hint>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-          <mat-label>Gecodeerde Letter</mat-label>
+          <mat-label>Het versleutelde karakter</mat-label>
           <textarea
             matInput
             [(ngModel)]="entry.encryptedLetter"
@@ -51,7 +43,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="fill">
-          <mat-label>Hint om te decoden</mat-label>
+          <mat-label>Hint om te het karakter te ontcijferen</mat-label>
           <textarea
             matInput
             [(ngModel)]="entry.decryptionHint"
@@ -59,15 +51,8 @@
             required
           ></textarea>
         </mat-form-field>
-
-        <button mat-mini-button color="warn" (click)="removeEntry($index)">
-          Remove
-        </button>
-        <mat-divider></mat-divider>
-      </div>
+      </mat-expansion-panel>
       }
-
-      <button mat-mini-button (click)="addEntry()">Add Another Letter</button>
     </form>
 
     <mat-card-actions>
@@ -80,39 +65,58 @@
         Generate URLs and QR Codes
       </button>
 
-      <button mat-raised-button (click)="triggerFileInput()">
-        <mat-icon>upload</mat-icon> CSV
-      </button>
-      <input
-        type="file"
-        #fileInput
-        (change)="onFileSelected($event)"
-        accept=".csv"
-        style="display: none"
-      />
-    </mat-card-actions>
-
-    <!-- Display the generated URLs and QR codes -->
-    @if(generatedEntries.length > 0) {
-    <div>
-      <h3>Generated URLs and QR Codes:</h3>
-
-      @for (genEntry of generatedEntries; track $index) {
       <div>
-        <h4>Letter {{ $index + 1 }}</h4>
-        <p>
-          <strong>URL:</strong>
-          <a [href]="genEntry.url" target="_blank">{{ genEntry.url }}</a>
-        </p>
-        <qrcode
-          [qrdata]="genEntry.url"
-          [width]="256"
-          errorCorrectionLevel="M"
-        ></qrcode>
-        <mat-divider></mat-divider>
+        <button mat-raised-button (click)="addEntry()">
+          <mat-icon> add </mat-icon>
+          Add new letter
+        </button>
+
+        <button mat-raised-button (click)="triggerFileInput()">
+          <mat-icon>upload</mat-icon> Import from CSV
+        </button>
+        <input
+          type="file"
+          #fileInput
+          (change)="onFileSelected($event)"
+          accept=".csv"
+          style="display: none"
+        />
       </div>
-      }
-    </div>
+    </mat-card-actions>
+  </mat-card-content>
+</mat-card>
+
+<!-- Display the generated URLs and QR codes -->
+@if(generatedEntries.length > 0) {
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title> Generated URLs and QR Codes: </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    @for (genEntry of generatedEntries; track $index) {
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title> Positie {{ $index + 1 }} </mat-panel-title>
+        @if (genEntry.name){
+        <mat-panel-description
+          >Toegewezen persoon: {{ genEntry.name }}
+        </mat-panel-description>
+        }
+      </mat-expansion-panel-header>
+      <p class="generated-url">
+        <strong>URL:</strong>
+        <a [href]="genEntry.url" target="_blank">{{ genEntry.url }}</a>
+      </p>
+      <qrcode
+        [qrdata]="genEntry.url"
+        [width]="256"
+        errorCorrectionLevel="M"
+      ></qrcode>
+    </mat-expansion-panel>
+
     }
   </mat-card-content>
 </mat-card>
+}

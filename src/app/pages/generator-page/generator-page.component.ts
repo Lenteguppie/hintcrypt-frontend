@@ -1,16 +1,18 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDivider } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { QRCodeModule } from 'angularx-qrcode';
+import { LocalStorageHintEntriesKey } from './generator-page.models';
 
 interface Entry {
   name?: string;
   assignment: string;
-  letterIndex: number;
+  letterIndex?: number;
   encryptedLetter: string;
   decryptionHint: string;
 }
@@ -26,28 +28,40 @@ interface Entry {
     QRCodeModule,
     MatIconModule,
     MatDivider,
+    MatExpansionModule,
   ],
   templateUrl: './generator-page.component.html',
   styleUrl: './generator-page.component.scss',
 })
-export class GeneratorPageComponent {
+export class GeneratorPageComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef;
 
   entries: Entry[] = [
     {
       assignment: '',
-      letterIndex: 0,
       encryptedLetter: '',
       decryptionHint: '',
     },
   ];
 
-  generatedEntries: { url: string }[] = [];
+  generatedEntries: {
+    url: string;
+    name?: string;
+  }[] = [];
+
+  ngOnInit(): void {
+    const storedHintEntries = localStorage.getItem(LocalStorageHintEntriesKey);
+
+    if (storedHintEntries) {
+      this.entries = JSON.parse(storedHintEntries);
+
+      this.generate(true);
+    }
+  }
 
   addEntry() {
     this.entries.push({
       assignment: '',
-      letterIndex: this.entries.length,
       encryptedLetter: '',
       decryptionHint: '',
     });
@@ -55,14 +69,16 @@ export class GeneratorPageComponent {
 
   removeEntry(index: number) {
     this.entries.splice(index, 1);
+
+    this.generate();
   }
 
-  generate() {
-    this.generatedEntries = this.entries.map((entry) => {
+  generate(fromLocalStorage?: boolean) {
+    this.generatedEntries = this.entries.map((entry: Entry, index: number) => {
       const data = {
         name: entry.name,
         assignment: entry.assignment,
-        letterIndex: entry.letterIndex,
+        letterIndex: index,
         encryptedLetter: entry.encryptedLetter,
         decryptionHint: entry.decryptionHint,
       };
@@ -82,12 +98,17 @@ export class GeneratorPageComponent {
         // Construct the URL
         const url = `${window.location.origin}/hint/${urlEncoded}`;
 
-        return { url };
+
+        return { url: url, name: data.name };
       } catch (error) {
         console.error('Error encoding data:', error);
         return { url: 'Error generating URL' };
       }
     });
+
+    if(!fromLocalStorage){
+      localStorage.setItem(LocalStorageHintEntriesKey, JSON.stringify(this.entries));
+    }
   }
 
   triggerFileInput() {
@@ -125,12 +146,12 @@ export class GeneratorPageComponent {
         return {
           name: entry.name || null,
           assignment: entry.assignment || '',
-          letterIndex: (Number(entry.letterIndex) || index) + 1,
           encryptedLetter: entry.encryptedLetter || '',
           decryptionHint: entry.decryptionHint || '',
         };
       });
       this.entries = entries;
+      this.generate();
     } catch (error) {
       console.error('Error parsing CSV:', error);
       alert('Error parsing CSV file.');

@@ -1,6 +1,32 @@
 mat-card {
-  max-width: 800px;
+  max-width: 60%;
   margin: 20px auto;
+
+  mat-card-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  mat-card-content {
+
+    .generated-url {
+      max-width: max-content;
+      width: 100%;
+      white-space: nowrap; /* Prevents text from wrapping */
+      overflow: hidden; /* Hides the overflow text */
+      text-overflow: ellipsis; /* Adds ellipsis for overflowed text */
+    }
+  }
+}
+
+mat-expansion-panel {
+  margin-bottom: 10px;
+}
+
+.form-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 mat-form-field {

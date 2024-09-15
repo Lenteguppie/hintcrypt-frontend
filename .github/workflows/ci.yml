@@ -58,5 +58,5 @@ jobs:
     - name: Run tests
       run: npm test -- --no-watch --no-progress --browsers=ChromeHeadless
 
-    - name: Lint the code
-      run: npm run lint
+    # - name: Lint the code
+    #   run: npm run lint

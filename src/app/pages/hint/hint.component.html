@@ -1,0 +1,49 @@
+<div class="card-container">
+  <img />
+
+  <mat-card class="hint-card">
+    <mat-card-header>
+      @if(name){
+      <mat-card-title>Hi {{ name }}!</mat-card-title>
+      } @else {
+      <mat-card-title>Hi!</mat-card-title>
+      }
+      <mat-card-subtitle>
+        Voordat Owen zijn hint mag zien moet hij eerst de volgende opdracht
+        uitvoeren:
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <span>{{ assignment }}</span>
+
+      @if (rewardVisible) {
+      <mat-divider></mat-divider>
+      <div>
+        <p>
+          De positie van jouw letter: <em>{{ letterIndex + 1 }}</em>
+        </p>
+        <p>
+          Jouw gecodeerde letter: <em>{{ encryptedLetter }}</em>
+        </p>
+        <p>
+          <em>{{ decryptionHint }}</em>
+        </p>
+      </div>
+      }
+
+      <mat-card-actions>
+        @if (!rewardVisible) {
+        <button mat-raised-button color="primary" (click)="showReward()">
+          <mat-icon>visibility</mat-icon>
+          Laat de hint zien
+        </button>
+        } @else {
+        <button mat-raised-button color="primary" (click)="hideReward()">
+          <mat-icon>visibility_off</mat-icon>
+          Verberg hint
+        </button>
+        }
+      </mat-card-actions>
+    </mat-card-content>
+  </mat-card>
+</div>

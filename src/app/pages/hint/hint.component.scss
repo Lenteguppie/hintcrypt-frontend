@@ -1,0 +1,22 @@
+.card-container {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+  height: 100vh; /* Full viewport height */
+}
+
+mat-card {
+  max-width: 600px;
+  width: 100%;
+  margin: 0 20px; /* Optional side margins */
+
+  mat-card-subtitle {
+    color: gray;
+  }
+
+  mat-divider {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}

@@ -1,0 +1,118 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Admin paneel: Genereer QR codes en URLs</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form (ngSubmit)="generate()" #generatorForm="ngForm">
+      @for (entry of entries; track $index) {
+      <div>
+        <h6>Letter {{ $index + 1 }}</h6>
+        <button mat-icon-button>
+          <mat-icon> delete </mat-icon>
+        </button>
+        <mat-form-field appearance="fill">
+          <mat-label>Naam</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="entry.name"
+            name="name{{ $index }}"
+          ></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Opdracht</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="entry.assignment"
+            name="assignment{{ $index }}"
+            required
+          ></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Letter positie</mat-label>
+          <input
+            matInput
+            [(ngModel)]="entry.letterIndex"
+            name="letterIndex{{ $index }}"
+            required
+          />
+          <mat-hint>De posities beginnen bij 1!</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Gecodeerde Letter</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="entry.encryptedLetter"
+            name="encryptedLetter{{ $index }}"
+            required
+          ></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Hint om te decoden</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="entry.decryptionHint"
+            name="decryptionHint{{ $index }}"
+            required
+          ></textarea>
+        </mat-form-field>
+
+        <button mat-mini-button color="warn" (click)="removeEntry($index)">
+          Remove
+        </button>
+        <mat-divider></mat-divider>
+      </div>
+      }
+
+      <button mat-mini-button (click)="addEntry()">Add Another Letter</button>
+    </form>
+
+    <mat-card-actions>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="generate()"
+        [disabled]="!generatorForm.form.valid"
+      >
+        Generate URLs and QR Codes
+      </button>
+
+      <button mat-raised-button (click)="triggerFileInput()">
+        <mat-icon>upload</mat-icon> CSV
+      </button>
+      <input
+        type="file"
+        #fileInput
+        (change)="onFileSelected($event)"
+        accept=".csv"
+        style="display: none"
+      />
+    </mat-card-actions>
+
+    <!-- Display the generated URLs and QR codes -->
+    @if(generatedEntries.length > 0) {
+    <div>
+      <h3>Generated URLs and QR Codes:</h3>
+
+      @for (genEntry of generatedEntries; track $index) {
+      <div>
+        <h4>Letter {{ $index + 1 }}</h4>
+        <p>
+          <strong>URL:</strong>
+          <a [href]="genEntry.url" target="_blank">{{ genEntry.url }}</a>
+        </p>
+        <qrcode
+          [qrdata]="genEntry.url"
+          [width]="256"
+          errorCorrectionLevel="M"
+        ></qrcode>
+        <mat-divider></mat-divider>
+      </div>
+      }
+    </div>
+    }
+  </mat-card-content>
+</mat-card>

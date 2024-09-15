@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - develop
+    tags:
+      - '*'
   pull_request:
     branches:
       - develop
@@ -17,31 +19,44 @@ jobs:
         node-version: [18.x]
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
 
-      - name: Cache Node.js modules
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+    - name: Cache Node.js modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
 
-      - name: Install dependencies
-        run: npm ci
+    - name: Install dependencies
+      run: npm ci
 
-      - name: Build Angular app
-        run: npm run build --if-present
+    - name: Install Chrome
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable
+      env:
+        DEBIAN_FRONTEND: noninteractive
 
-      - name: Run tests
-        run: npm test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+    - name: Build Angular app
+      run: npm run build --if-present
 
-      - name: Lint the code
-        run: npm run lint
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: angular-build-${{ github.ref_name }}
+        path: dist/ # Adjust this path if your build output directory is different
+
+    - name: Run tests
+      run: npm test -- --no-watch --no-progress --browsers=ChromeHeadless
+
+    - name: Lint the code
+      run: npm run lint

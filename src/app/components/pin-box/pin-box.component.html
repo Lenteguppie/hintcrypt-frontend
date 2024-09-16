@@ -1,0 +1,34 @@
+<form>
+  @for (group of _groupList; track $index; let groupIndex = $index; let last =
+  $last) {
+  <div class="lib-pib-box__group">
+    @for(boxInGroup of _boxInGroupList; track $index; let _boxInGroupIndex =
+    $index){
+    <input
+      #inputElems
+      lib-pin-box-input
+      [type]="type"
+      tabindex="0"
+      [class.lib-pib-box__input--invalid]="
+        _isBoxInvalid(_getIndex(groupIndex, _boxInGroupIndex))
+      "
+      [class.lib-pib-box__input--desktop]="_isDesktop"
+      autocapitalize="off"
+      [disabled]="_disabled"
+      [index]="_getIndex(groupIndex, _boxInGroupIndex)"
+      (valueChange)="_onPinValueChange()"
+      (focusNext)="_focusNext(_getIndex(groupIndex, _boxInGroupIndex))"
+      (focusPrev)="_focusPrev(_getIndex(groupIndex, _boxInGroupIndex))"
+      (blur)="_onBlur()"
+    />
+    }
+
+    <div class="lib-pin-box__group-split-wrapper">
+      <div
+        class="lib-pin-box__group-split"
+        [class.lib-pin-box__group-split--last]="last"
+      ></div>
+    </div>
+  </div>
+  }
+</form>

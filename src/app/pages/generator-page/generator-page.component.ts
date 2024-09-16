@@ -1,5 +1,18 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,7 +22,12 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { QRCodeModule } from 'angularx-qrcode';
-import { LocalStorageHintEntriesKey } from './generator-page.models';
+import {
+  GeneratedEntry,
+  LocalStorageGameInfoKey,
+  LocalStorageHintEntriesKey,
+} from './generator-page.models';
+import { MatStepperModule } from '@angular/material/stepper';
 
 interface Entry {
   name?: string;
@@ -23,7 +41,9 @@ interface Entry {
   selector: 'app-generator-page',
   standalone: true,
   imports: [
+    MatStepperModule,
     FormsModule,
+    ReactiveFormsModule,
     MatInputModule,
     MatButtonModule,
     MatCardModule,
@@ -39,81 +59,153 @@ interface Entry {
 export class GeneratorPageComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef;
 
-  entries: Entry[] = [
-    {
-      assignment: '',
-      encryptedLetter: '',
-      decryptionHint: '',
-    },
-  ];
+  receiverForm: FormGroup;
 
-  generatedEntries: {
-    url: string;
-    name?: string;
-  }[] = [];
+  hintsForm: FormGroup;
+
+  public generatedTargetEntry!: GeneratedEntry;
+
+  public generatedHintEntries: GeneratedEntry[] = [];
+
+  constructor(private fb: FormBuilder) {
+    this.hintsForm = this.fb.group({
+      formArray: this.fb.array([this._createForm()]),
+    });
+
+    this.receiverForm = this.fb.group({
+      name: [''],
+      code: [''],
+    });
+  }
 
   ngOnInit(): void {
     const storedHintEntries = localStorage.getItem(LocalStorageHintEntriesKey);
 
     if (storedHintEntries) {
-      this.entries = JSON.parse(storedHintEntries);
-
-      this.generate(true);
+      this._loadFormArrayValues(JSON.parse(storedHintEntries));
     }
-  }
 
-  addEntry() {
-    this.entries.push({
-      assignment: '',
-      encryptedLetter: '',
-      decryptionHint: '',
+    const gameInfoEntries = localStorage.getItem(LocalStorageGameInfoKey);
+
+    if (gameInfoEntries) {
+      const parsedInfoEntries = JSON.parse(gameInfoEntries);
+      this.receiverForm.patchValue(parsedInfoEntries);
+    }
+
+    this.receiverForm.valueChanges.subscribe(() => {
+      this.generatedHintEntries = [];
+    });
+
+    this.hintsForm.valueChanges.subscribe(() => {
+      this.generatedHintEntries = [];
     });
   }
 
-  removeEntry(index: number) {
-    this.entries.splice(index, 1);
+  // Add a new form group to the form array
+  public addEntry() {
+    (this.hintsForm.get('formArray') as FormArray).push(this._createForm());
+  }
 
-    this.generate();
+  private _createForm(): FormGroup {
+    return this.fb.group({
+      name: [''],
+      assignment: ['', Validators.required],
+      encryptedLetter: ['', Validators.required],
+      decryptionHint: ['', Validators.required],
+    });
+  }
+
+  // Remove a form group from the form array
+  public removeHint(index: number) {
+    (this.hintsForm.get('formArray') as FormArray).removeAt(index);
+
+    this._pushHintsToLocalStorage();
+  }
+
+  // Get the form array as a FormArray object
+  get hintsArray(): FormArray {
+    return this.hintsForm.get('formArray') as FormArray;
+  }
+
+  // Check if all forms in the formArray are valid
+  areFormsValid(): boolean {
+    return this.hintsArray.valid && this.hintsArray.length == 15;
+  }
+
+  // Function to load formArray values from localStorage into the formArray
+  private _loadFormArrayValues(savedValues: any[]) {
+    // Clear current form array if needed
+    const formArrayControl = this.hintsForm.get('formArray') as FormArray;
+    formArrayControl.clear(); // Clear any existing controls
+
+    // Populate the form array with saved values
+    savedValues.forEach((value) => {
+      const newForm = this._createForm();
+      newForm.patchValue(value); // Use patchValue to set the values
+      formArrayControl.push(newForm);
+    });
+  }
+
+  private _base64EncodeURLData(data: any, path: string) {
+    try {
+      // Convert to JSON string
+      const jsonString = JSON.stringify(data);
+
+      // Encode to base64
+      const base64Encoded = btoa(jsonString);
+
+      // URL encode the base64 string
+      const urlEncoded = encodeURIComponent(base64Encoded);
+
+      // Construct the URL
+      const url = `${window.location.origin}/${path}/${urlEncoded}`;
+
+      return { url: url, name: data['name'] };
+    } catch (error) {
+      console.error('Error encoding data:', error);
+      return { url: 'Error generating URL' };
+    }
   }
 
   generate(fromLocalStorage?: boolean) {
-    this.generatedEntries = this.entries.map((entry: Entry, index: number) => {
-      const data = {
-        name: entry.name,
-        assignment: entry.assignment,
-        letterIndex: index,
-        encryptedLetter: entry.encryptedLetter,
-        decryptionHint: entry.decryptionHint,
-      };
-
-      console.log('data', data);
-
-      try {
-        // Convert to JSON string
-        const jsonString = JSON.stringify(data);
-
-        // Encode to base64
-        const base64Encoded = btoa(jsonString);
-
-        // URL encode the base64 string
-        const urlEncoded = encodeURIComponent(base64Encoded);
-
-        // Construct the URL
-        const url = `${window.location.origin}/hint/${urlEncoded}`;
-
-        return { url: url, name: data.name };
-      } catch (error) {
-        console.error('Error encoding data:', error);
-        return { url: 'Error generating URL' };
-      }
-    });
+    const receiverValue = this.receiverForm.getRawValue();
+    console.log('target', receiverValue);
+    this.generatedTargetEntry = this._base64EncodeURLData(
+      receiverValue,
+      'code'
+    );
+    this.generatedHintEntries = this.hintsArray
+      .getRawValue()
+      .map((entry: Entry, index: number) => {
+        const data = {
+          name: entry.name,
+          assignment: entry.assignment,
+          letterIndex: index,
+          encryptedLetter: entry.encryptedLetter,
+          decryptionHint: entry.decryptionHint,
+          targetName: this.receiverForm.get('name')?.value || null,
+        };
+        return this._base64EncodeURLData(data, 'hint');
+      });
 
     if (!fromLocalStorage) {
-      localStorage.setItem(
-        LocalStorageHintEntriesKey,
-        JSON.stringify(this.entries)
-      );
+      this._pushReceiverToLocalStorage();
+      this._pushHintsToLocalStorage();
     }
+  }
+
+  private _pushReceiverToLocalStorage() {
+    localStorage.setItem(
+      LocalStorageGameInfoKey,
+      JSON.stringify(this.receiverForm.getRawValue())
+    );
+  }
+
+  private _pushHintsToLocalStorage() {
+    localStorage.setItem(
+      LocalStorageHintEntriesKey,
+      JSON.stringify(this.hintsArray.getRawValue())
+    );
   }
 
   triggerFileInput() {
@@ -155,8 +247,8 @@ export class GeneratorPageComponent implements OnInit {
           decryptionHint: entry.decryptionHint || '',
         };
       });
-      this.entries = entries;
-      this.generate();
+
+      this._loadFormArrayValues(entries);
     } catch (error) {
       console.error('Error parsing CSV:', error);
       alert('Error parsing CSV file.');

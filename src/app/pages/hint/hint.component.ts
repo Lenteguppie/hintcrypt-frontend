@@ -32,6 +32,7 @@ export class HintComponent implements OnInit {
   letterIndex: number = -1;
   encryptedLetter: string = '';
   decryptionHint: string = '';
+  targetName!: string;
 
   // Other component variables
   rewardVisible: boolean = false;
@@ -47,6 +48,7 @@ export class HintComponent implements OnInit {
         const decodedString = atob(decodeURIComponent(hintParamsEncoded));
         // Parse the JSON string
         const data = JSON.parse(decodedString);
+        console.log('data', data);
 
         // Assign the data to component variables
         this.name = data.name || null;
@@ -54,6 +56,7 @@ export class HintComponent implements OnInit {
         this.assignment = data.assignment;
         this.encryptedLetter = data.encryptedLetter;
         this.decryptionHint = data.decryptionHint;
+        this.targetName = data.targetName;
       } catch (error) {
         console.error('Failed to decode or parse hint parameters:', error);
         alert('Invalid hint parameters provided.');

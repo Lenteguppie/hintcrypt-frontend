@@ -1,99 +1,173 @@
 <mat-card>
-  <mat-card-header>
-    <mat-card-title>Admin paneel: Genereer QR codes en URLs</mat-card-title>
-  </mat-card-header>
+  <mat-card-header>Setup code speurtocht</mat-card-header>
   <mat-card-content>
-    <form #generatorForm="ngForm">
-      @for (entry of entries; track $index) {
+    <mat-vertical-stepper [linear]="true" #stepper>
+      <!-- Step 1: Receiver Form -->
+      <mat-step [stepControl]="receiverForm">
+        <form [formGroup]="receiverForm">
+          <ng-template matStepLabel>Receiver Information</ng-template>
 
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title> Positie {{ $index + 1 }} </mat-panel-title>
-          <button mat-icon-button (click)="removeEntry($index)">
-            <mat-icon> delete </mat-icon>
-          </button>
-        </mat-expansion-panel-header>
+          <!-- Name field -->
+          <mat-form-field>
+            <mat-label>Naam</mat-label>
+            <input matInput formControlName="name" required />
+            <!-- <mat-error *ngIf="receiverForm.get('name')?.hasError('required')"
+          >Name is required</mat-error
+        > -->
+          </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Naam</mat-label>
-          <textarea
-            matInput
-            [(ngModel)]="entry.name"
-            name="name{{ $index }}"
-          ></textarea>
-        </mat-form-field>
+          <!-- Code field -->
+          <mat-form-field>
+            <mat-label>Code</mat-label>
+            <input matInput formControlName="code" required />
+            <!-- <mat-error *ngIf="receiverForm.get('code')?.hasError('required')"
+          >Code is required</mat-error
+        > -->
+            <!-- <mat-error
+          *ngIf="
+            receiverForm.get('code')?.hasError('minlength') ||
+            receiverForm.get('code')?.hasError('maxlength')
+          "
+        >
+          Code must be exactly 15 characters
+        </mat-error> -->
+          </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Opdracht</mat-label>
-          <textarea
-            matInput
-            [(ngModel)]="entry.assignment"
-            name="assignment{{ $index }}"
-            required
-          ></textarea>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Het versleutelde karakter</mat-label>
-          <textarea
-            matInput
-            [(ngModel)]="entry.encryptedLetter"
-            name="encryptedLetter{{ $index }}"
-            required
-          ></textarea>
-        </mat-form-field>
+          <div>
+            <button mat-button matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Hint om te het karakter te ontcijferen</mat-label>
-          <textarea
-            matInput
-            [(ngModel)]="entry.decryptionHint"
-            name="decryptionHint{{ $index }}"
-            required
-          ></textarea>
-        </mat-form-field>
-      </mat-expansion-panel>
-      }
-    </form>
+      <!-- Step 2: My Form (FormArray) -->
+      <mat-step [stepControl]="hintsForm">
+        <form [formGroup]="hintsForm">
+          <ng-template matStepLabel>Form Array Information</ng-template>
 
-    <mat-card-actions>
-      <button
-        mat-raised-button
-        (click)="generate()"
-        [disabled]="!generatorForm.form.valid"
-      >
-        <mat-icon> qr_code </mat-icon>
-        Genereer
-      </button>
+          <div formArrayName="formArray">
+            @for(form of hintsArray.controls; track form; let i = $index){
+            <mat-expansion-panel [formGroupName]="i">
+              <mat-expansion-panel-header>
+                <mat-panel-title> {{ i + 1 }} </mat-panel-title>
 
-      <button
-        mat-icon-button
-        (click)="addEntry()"
-        matTooltip="Voeg een nieuw karakter toe"
-      >
-        <mat-icon> add </mat-icon>
-      </button>
+                @if(form.get('name')?.value){
+                <mat-panel-description class="generated-url">{{
+                  form.get("name")?.value
+                }}</mat-panel-description>
+                }
+                <button type="button" mat-icon-button (click)="removeHint(i)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-expansion-panel-header>
+              <!-- Name field -->
+              <mat-form-field>
+                <mat-label>Naam</mat-label>
+                <input matInput formControlName="name" />
+              </mat-form-field>
 
-      <button
-        mat-icon-button
-        (click)="triggerFileInput()"
-        matTooltip="Gebruik de configuratie van een CSV bestand"
-      >
-        <mat-icon>upload</mat-icon>
-      </button>
+              <!-- Assignment field -->
+              <mat-form-field>
+                <mat-label>Opdracht</mat-label>
+                <input matInput formControlName="assignment" required />
+              </mat-form-field>
 
-      <input
-        type="file"
-        #fileInput
-        (change)="onFileSelected($event)"
-        accept=".csv"
-        style="display: none"
-      />
-    </mat-card-actions>
+              <!-- Encrypted Letter field -->
+              <mat-form-field>
+                <mat-label>Gecodeerde Letter</mat-label>
+                <input matInput formControlName="encryptedLetter" required />
+              </mat-form-field>
+
+              <!-- Description Hint field -->
+              <mat-form-field>
+                <mat-label>Hint om de letter te decoderen</mat-label>
+                <input matInput formControlName="decryptionHint" />
+              </mat-form-field>
+            </mat-expansion-panel>
+            }
+          </div>
+
+          <div>
+            <button
+              type="button"
+              mat-button
+              (click)="addEntry()"
+              [disabled]="hintsArray.length === 15"
+            >
+              Add Form
+            </button>
+          </div>
+
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button
+              mat-button
+              matStepperNext
+              [disabled]="!hintsForm.valid || hintsArray.length !== 15"
+            >
+              Next
+            </button>
+
+            <button
+              mat-button
+              (click)="triggerFileInput()"
+              matTooltip="Gebruik de configuratie van een CSV bestand"
+            >
+              <mat-icon>upload</mat-icon>
+              Import from CSV
+            </button>
+
+            <input
+              type="file"
+              #fileInput
+              (change)="onFileSelected($event)"
+              accept=".csv"
+              style="display: none"
+            />
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Final step: Review and Submit -->
+      <mat-step>
+        <ng-template matStepLabel>Review and Submit</ng-template>
+        <p>All forms are valid and ready to submit.</p>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button (click)="generate()" [disabled]="!areFormsValid()">
+          Submit
+        </button>
+      </mat-step>
+    </mat-vertical-stepper>
   </mat-card-content>
 </mat-card>
 
+@if(generatedTargetEntry){
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      Generated target entry: {{ generatedTargetEntry.name }}
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <p class="generated-url">
+      <strong>URL:</strong>
+      <a [href]="generatedTargetEntry.url" target="_blank">{{
+        generatedTargetEntry.url
+      }}</a>
+    </p>
+    <qrcode
+      [qrdata]="generatedTargetEntry.url"
+      [width]="256"
+      errorCorrectionLevel="M"
+    ></qrcode>
+  </mat-card-content>
+</mat-card>
+
+}
+
 <!-- Display the generated URLs and QR codes -->
-@if(generatedEntries.length > 0) {
+@if(generatedHintEntries.length > 0) {
 
 <mat-card>
   <mat-card-header>
@@ -101,7 +175,7 @@
   </mat-card-header>
 
   <mat-card-content>
-    @for (genEntry of generatedEntries; track $index) {
+    @for (genEntry of generatedHintEntries; track $index) {
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title> Positie {{ $index + 1 }} </mat-panel-title>

@@ -1,0 +1,23 @@
+.verify {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  p {
+    font-family: Lato;
+  }
+
+  .lib-pin-box {
+    display: flex;
+    flex-wrap: wrap;
+    // max-width: 80%;
+    align-content: center;
+    justify-content: center;
+  }
+
+  .code-input {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

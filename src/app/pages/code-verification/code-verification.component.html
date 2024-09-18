@@ -1,6 +1,9 @@
 <div class="verify">
   <mat-card>
-    <mat-card-header>Hi {{ name }}! Voer hier je code in:</mat-card-header>
+    <mat-card-header>
+      <mat-card-title>Hi {{ name }}!</mat-card-title>
+      <mat-card-subtitle> hier je code in:</mat-card-subtitle></mat-card-header
+    >
     <mat-card-content>
       <lib-pin-box
         [length]="15"
@@ -17,6 +20,61 @@
       <button mat-button (click)="verify()" [disabled]="!isCorrectLength">
         Submit
       </button>
+
+      <span class="status-icon">
+        Code correct: @if(isCodeVerified && isCodeCorrect){
+        <mat-icon class="status-icon-success" matTooltip="De code is correct!"
+          >checkmark</mat-icon
+        >
+        } @else if (isCodeVerified && !isCodeCorrect) {
+        <mat-icon
+          class="status-icon-failed"
+          matTooltip="De code is niet correct"
+          >close</mat-icon
+        >
+        } @else {
+        <mat-icon
+          class="status-icon-unknown"
+          matTooltip="De code is nog niet compleet"
+          >question_mark</mat-icon
+        >
+        }
+      </span>
     </mat-card-actions>
   </mat-card>
 </div>
+
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <mat-icon>help_outline</mat-icon> Uitleg
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  Welkom {{ name }}, Jij bent jarig geweest en hebt heel episch cadeau gekregen.
+  Voordat jij het cadeau krijgt hebben wij iedereen op jouw feest een link
+  gestuurd waar een opdracht in beschreven staat. Voer jij de opdracht correct
+  uit, dan krijg jij een gecodeerde letter, de positie van die letter en een
+  hint of vervolg opdracht waarmee je de letter kan decoderen.
+  @if(requestLastHintAtCreator){ De laatste hint krijg je van {{ creators }} pas
+  als je alle andere hints hebt verkregen. }
+</mat-expansion-panel>
+
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <mat-icon>help_outline</mat-icon> Spelregels
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  Hier onder staan alle spelregels beschreven. Mocht iemand zich niet aan de
+  spelregels houden, dan wordt dit bestraft met een
+  shotje.@if(requestLastHintAtCreator){ Bij enige twijfel of een regel gebroken
+  is wordt de jury ingeschakeld, die bestaan uit}
+  {{ creators }}.
+
+  <ol>
+    <li>{{ name }} mag medespelers niet forceren om de hint te geven.</li>
+    <li>{{ name }} mag medespelers niet proberen om de hint te forceren.</li>
+    <li>De medespelers moeten eerlijk hun hint weggeven.</li>
+  </ol>
+</mat-expansion-panel>

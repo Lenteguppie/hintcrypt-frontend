@@ -4,11 +4,21 @@ import { FormControl, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-code-verification',
   standalone: true,
-  imports: [LibPinBoxComponent, MatCardModule, MatButtonModule],
+  imports: [
+    LibPinBoxComponent,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatExpansionModule,
+  ],
   templateUrl: './code-verification.component.html',
   styleUrl: './code-verification.component.scss',
 })
@@ -24,6 +34,9 @@ export class CodeVerificationComponent implements OnInit {
 
   public isCodeCorrect = false;
   public isCodeVerified = false;
+  public requestLastHintAtCreator = true;
+
+  private _creators = ['Sascha', 'Wilco', 'Lara'];
 
   errors = {
     required: 'Enter Invitation Code',
@@ -43,6 +56,20 @@ export class CodeVerificationComponent implements OnInit {
     this.isCodeCorrect = this._code === this.correct_code;
     console.log('Is verified', this.isCodeVerified);
     console.log('Is correct', this.isCodeCorrect);
+  }
+
+  public get creators(): string {
+    if (this._creators.length === 1) {
+      return this._creators[0];
+    }
+
+    return this._creators.reduce((acc, creator, index) => {
+      if (index === this._creators.length - 1) {
+        return [acc, 'en ' + creator].join(' ');
+      }
+
+      return acc + ', ' + creator;
+    }, '');
   }
 
   private _getCodeParams() {

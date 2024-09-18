@@ -20,4 +20,33 @@
     align-items: center;
     justify-content: center;
   }
+
+  mat-card-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+mat-card-actions {
+  display: inline-flex;
+  justify-content: space-between;
+}
+
+.status-icon {
+  display: flex;
+  justify-content: center;
+  color: gray;
+}
+
+.status-icon-unknown {
+  color: gray;
+}
+
+.status-icon-failed {
+  color: rgba(238, 39, 39, 0.822);
+}
+
+.status-icon-success {
+  color: rgb(3, 180, 3);
 }

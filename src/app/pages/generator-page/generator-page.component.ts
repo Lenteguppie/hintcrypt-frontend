@@ -8,6 +8,7 @@ import {
 import {
   FormArray,
   FormBuilder,
+  FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
@@ -28,6 +29,7 @@ import {
   LocalStorageHintEntriesKey,
 } from './generator-page.models';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 interface Entry {
   name?: string;
@@ -35,6 +37,10 @@ interface Entry {
   letterIndex?: number;
   encryptedLetter: string;
   decryptionHint: string;
+}
+
+interface Organizer {
+  name: string;
 }
 
 @Component({
@@ -52,6 +58,7 @@ interface Entry {
     MatDivider,
     MatExpansionModule,
     MatTooltipModule,
+    MatSlideToggleModule,
   ],
   templateUrl: './generator-page.component.html',
   styleUrl: './generator-page.component.scss',
@@ -75,6 +82,7 @@ export class GeneratorPageComponent implements OnInit {
     this.receiverForm = this.fb.group({
       name: [''],
       code: [''],
+      lastHintByCreators: new FormControl(false),
     });
   }
 
@@ -92,7 +100,8 @@ export class GeneratorPageComponent implements OnInit {
       this.receiverForm.patchValue(parsedInfoEntries);
     }
 
-    this.receiverForm.valueChanges.subscribe(() => {
+    this.receiverForm.valueChanges.subscribe((value) => {
+      console.log(value);
       this.generatedHintEntries = [];
     });
 

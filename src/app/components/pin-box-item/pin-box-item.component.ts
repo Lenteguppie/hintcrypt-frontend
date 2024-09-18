@@ -3,6 +3,7 @@ import {
   ARROW_LEFT,
   ARROW_RIGHT,
   BACK_SPACE_CODE,
+  BACK_SPACE,
   DELETE,
 } from '../../models/pin-box.model';
 import {
@@ -106,7 +107,7 @@ export class LibPinBoxItemDirective implements OnInit {
 
     // Focus prev element
     if (
-      (e.keyCode === BACK_SPACE_CODE && !this.hasValue) ||
+      (e.key === BACK_SPACE && !this.hasValue && this.index > 0) ||
       e.key === ARROW_LEFT
       // (e.shiftKey && e.key === TAB)
     ) {
@@ -116,7 +117,7 @@ export class LibPinBoxItemDirective implements OnInit {
     }
 
     // Remove value
-    if (e.keyCode === BACK_SPACE_CODE || e.key === DELETE) {
+    if (e.key === BACK_SPACE || e.key === DELETE) {
       e.preventDefault();
       this.setValueAndEmit('');
       return;
@@ -141,11 +142,6 @@ export class LibPinBoxItemDirective implements OnInit {
   }
 
   private setValueAndEmit(value: string) {
-    if (!value) {
-      this.valueChange.emit({ value, index: this.index });
-      return;
-    }
-
     this.value = value;
     this.valueChange.emit({ value, index: this.index });
   }

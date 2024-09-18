@@ -69,9 +69,9 @@ export class LibPinBoxComponent implements OnInit, ControlValueAccessor {
   @Input() errorsMessage: any;
 
   @ViewChildren(LibPinBoxItemDirective)
-  pinBoxItemDirective: QueryList<LibPinBoxItemDirective> | undefined;
+  pinBoxItemDirective: QueryList<LibPinBoxItemDirective> = new QueryList();
   @ViewChildren(LibPinBoxItemDirective, { read: ElementRef })
-  pinBoxItemElem: QueryList<ElementRef<HTMLInputElement>> | undefined;
+  pinBoxItemElem: QueryList<ElementRef<HTMLInputElement>> = new QueryList();
 
   public _groupList: Array<any> = [];
   public _boxInGroupList: Array<any> = [];
@@ -90,10 +90,35 @@ export class LibPinBoxComponent implements OnInit, ControlValueAccessor {
     this._boxInGroupLength = Math.ceil(this.length / this.amountOfGroups);
     this._boxInGroupList = Array(this._boxInGroupLength).fill(0);
 
+    console.log('pinbox component value', this.formControl.value);
+
+    if (this.formControl.value && this.formControl.value != '') {
+      // this.value = this.formControl.value;
+      this.cd.detectChanges();
+      console.log('form value', this.formControl.value);
+
+      const trimmedValue = this.formControl.value
+        .split('')
+        .filter((char: string) => char != '-')
+        .join('');
+      console.log('trimmed', trimmedValue);
+
+      this.pinBoxItemDirective.forEach((pinBoxItem, index) => {
+        pinBoxItem.value = trimmedValue[index];
+      });
+      // this._onPaste(this.formControl.value);
+
+      this.cd.detectChanges();
+
+      console.log('test');
+    }
+
     console.log(this._groupList);
     console.log(this._boxInGroupList);
 
     this._isDesktop = this.deviceService.isDesktop();
+
+    this.cd.detectChanges();
   }
 
   public _onBlur() {
@@ -210,11 +235,7 @@ export class LibPinBoxComponent implements OnInit, ControlValueAccessor {
   }
 
   public _focusPrev(index: number) {
-    if (!this.pinBoxItemElem || index <= 0) {
-      return;
-    }
-
-    const prevPinBox = this.pinBoxItemElem.toArray()[index - 1].nativeElement;
+    const prevPinBox = this.pinBoxItemElem?.toArray()[index - 1].nativeElement;
     prevPinBox.focus();
   }
 

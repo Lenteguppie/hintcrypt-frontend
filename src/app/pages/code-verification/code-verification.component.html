@@ -17,10 +17,6 @@
       </lib-pin-box>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-button (click)="verify()" [disabled]="!isCorrectLength">
-        Submit
-      </button>
-
       <span class="status-icon">
         Code correct: @if(isCodeVerified && isCodeCorrect){
         <mat-icon class="status-icon-success" matTooltip="De code is correct!"
@@ -40,6 +36,16 @@
         >
         }
       </span>
+
+      <button
+        mat-icon-button
+        (click)="copyCode()"
+        [hidden]="!isCorrectLength || !isCodeVerified || !isCodeCorrect"
+      >
+        <mat-icon class="status-icon" matTooltip="Kopieer de code"
+          >content_copy</mat-icon
+        >
+      </button>
     </mat-card-actions>
   </mat-card>
 </div>
@@ -51,30 +57,32 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  Welkom {{ name }}, Jij bent jarig geweest en hebt heel episch cadeau gekregen.
-  Voordat jij het cadeau krijgt hebben wij iedereen op jouw feest een link
-  gestuurd waar een opdracht in beschreven staat. Voer jij de opdracht correct
-  uit, dan krijg jij een gecodeerde letter, de positie van die letter en een
-  hint of vervolg opdracht waarmee je de letter kan decoderen.
-  @if(requestLastHintAtCreator){ De laatste hint krijg je van {{ creators }} pas
-  als je alle andere hints hebt verkregen. }
+  Hi {{ name }}, Je staat op het punt om een episch cadeau te krijgen. Voordat
+  jij het cadeau krijgt hebben wij iedereen op jouw feest een link gestuurd waar
+  een opdracht in beschreven staat. Voer jij de opdracht correct uit, dan krijg
+  jij een gecodeerde letter, de positie van die letter en een hint of vervolg
+  opdracht waarmee je de letter kan decoderen. @if(requestLastHintAtCreator){ De
+  laatste hint krijg je van {{ creators }} wanneer je alle andere hints hebt
+  verkregen. }
 </mat-expansion-panel>
 
 <mat-expansion-panel>
   <mat-expansion-panel-header>
-    <mat-panel-title>
-      <mat-icon>help_outline</mat-icon> Spelregels
-    </mat-panel-title>
+    <mat-panel-title> <mat-icon>rule</mat-icon> Spelregels </mat-panel-title>
   </mat-expansion-panel-header>
   Hier onder staan alle spelregels beschreven. Mocht iemand zich niet aan de
   spelregels houden, dan wordt dit bestraft met een
   shotje.@if(requestLastHintAtCreator){ Bij enige twijfel of een regel gebroken
-  is wordt de jury ingeschakeld, die bestaan uit}
-  {{ creators }}.
+  is wordt er iemand van de jury ingeschakeld om te kijken of de regel echt
+  gebroken is of niet. De jury bestaat uit:
+  {{ creators }}}.
 
   <ol>
     <li>{{ name }} mag medespelers niet forceren om de hint te geven.</li>
     <li>{{ name }} mag medespelers niet proberen om de hint te forceren.</li>
     <li>De medespelers moeten eerlijk hun hint weggeven.</li>
+    <li>
+      De medespelers mogen {{ name }} niet helpen met het uitvoeren van de hint.
+    </li>
   </ol>
 </mat-expansion-panel>

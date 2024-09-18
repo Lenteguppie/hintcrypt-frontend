@@ -33,6 +33,20 @@ mat-card-actions {
   justify-content: space-between;
 }
 
+mat-expansion-panel {
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+
+  margin-top: 10px;
+}
+
+mat-panel-title {
+  mat-icon {
+    margin-right: 10px;
+  }
+}
+
 .status-icon {
   display: flex;
   justify-content: center;

@@ -11,28 +11,21 @@
           <mat-form-field>
             <mat-label>Naam</mat-label>
             <input matInput formControlName="name" required />
-            <!-- <mat-error *ngIf="receiverForm.get('name')?.hasError('required')"
-          >Name is required</mat-error
-        > -->
           </mat-form-field>
 
           <!-- Code field -->
           <mat-form-field>
             <mat-label>Code</mat-label>
             <input matInput formControlName="code" required />
-            <!-- <mat-error *ngIf="receiverForm.get('code')?.hasError('required')"
-          >Code is required</mat-error
-        > -->
-            <!-- <mat-error
-          *ngIf="
-            receiverForm.get('code')?.hasError('minlength') ||
-            receiverForm.get('code')?.hasError('maxlength')
-          "
-        >
-          Code must be exactly 15 characters
-        </mat-error> -->
           </mat-form-field>
 
+          <mat-slide-toggle
+            labelPosition="before"
+            formControlName="lastHintByCreators"
+            >Verberg laatste hint?</mat-slide-toggle
+          >
+
+          <!-- Action buttons -->
           <div>
             <button mat-button matStepperNext>Next</button>
           </div>
@@ -42,7 +35,7 @@
       <!-- Step 2: My Form (FormArray) -->
       <mat-step [stepControl]="hintsForm">
         <form [formGroup]="hintsForm">
-          <ng-template matStepLabel>Form Array Information</ng-template>
+          <ng-template matStepLabel>Hint Setup</ng-template>
 
           <div formArrayName="formArray">
             @for(form of hintsArray.controls; track form; let i = $index){

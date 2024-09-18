@@ -7,6 +7,8 @@ import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { Clipboard, ClipboardModule } from '@angular/cdk/clipboard';
+import { LocalStorageEnteredCodeKey } from './code-verification.models';
 
 @Component({
   selector: 'app-code-verification',
@@ -18,35 +20,45 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatIconModule,
     MatTooltipModule,
     MatExpansionModule,
+    ClipboardModule,
   ],
   templateUrl: './code-verification.component.html',
   styleUrl: './code-verification.component.scss',
 })
 export class CodeVerificationComponent implements OnInit {
-  invitationCodeCtrl = new FormControl('');
-
   public name!: string;
   public correct_code!: string;
 
   public isCorrectLength = false;
 
-  private _code: string | null = '';
+  private _code: string = '';
+
+  invitationCodeCtrl = new FormControl('');
 
   public isCodeCorrect = false;
   public isCodeVerified = false;
   public requestLastHintAtCreator = true;
 
-  private _creators = ['Sascha', 'Wilco', 'Lara'];
+  private _creators: { name: string }[] = [
+    { name: 'Sascha' },
+    { name: 'Wilco' },
+    { name: 'Lara' },
+  ];
 
   errors = {
     required: 'Enter Invitation Code',
     minlength: 'Fill all fields',
   };
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private clipboard: Clipboard) {}
 
   ngOnInit(): void {
     this._getCodeParams();
+    this._code = localStorage.getItem(LocalStorageEnteredCodeKey) || '';
+
+    console.log(this._code);
+
+    this.invitationCodeCtrl.setValue(this._code);
 
     this._subscribeToCodeFormChanges();
   }
@@ -54,21 +66,29 @@ export class CodeVerificationComponent implements OnInit {
   public verify() {
     this.isCodeVerified = true;
     this.isCodeCorrect = this._code === this.correct_code;
-    console.log('Is verified', this.isCodeVerified);
-    console.log('Is correct', this.isCodeCorrect);
+  }
+
+  public copyCode() {
+    if (this._code) {
+      this.clipboard.copy(this._code);
+    }
   }
 
   public get creators(): string {
     if (this._creators.length === 1) {
-      return this._creators[0];
+      return this._creators[0].name;
     }
 
     return this._creators.reduce((acc, creator, index) => {
       if (index === this._creators.length - 1) {
-        return [acc, 'en ' + creator].join(' ');
+        return [acc, 'en', '' + creator.name].join(' ');
       }
 
-      return acc + ', ' + creator;
+      if (index > 0) {
+        return acc + ', ' + creator.name;
+      }
+
+      return creator.name;
     }, '');
   }
 
@@ -84,6 +104,8 @@ export class CodeVerificationComponent implements OnInit {
         // Assign the data to component variables
         this.name = data.name || null;
         this.correct_code = data.code || null;
+
+        this.requestLastHintAtCreator = data.lastHintByCreators || false;
       } catch (error) {
         console.error('Failed to decode or parse code parameters:', error);
         alert('Invalid code parameters provided.');
@@ -98,14 +120,23 @@ export class CodeVerificationComponent implements OnInit {
     this.invitationCodeCtrl.valueChanges.subscribe((value: string | null) => {
       this.isCodeVerified = false;
       this.isCodeCorrect = false;
-      if (!value) {
+      this.isCorrectLength = false;
+
+      if (!value || value == null) {
         this._code = '';
+        return;
       }
 
       this._code = value;
       this.isCorrectLength =
         this._code?.split('').filter((char) => char !== ' ').length ===
         this.correct_code.length;
+
+      console.log('code', this._code);
+
+      localStorage.setItem(LocalStorageEnteredCodeKey, this._code || '');
+
+      console.log(this._code);
 
       if (this.isCorrectLength) {
         this.verify();

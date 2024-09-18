@@ -5,6 +5,7 @@ export const SPACE = ' ';
 export const ARROW_RIGHT = 'ArrowRight';
 export const ARROW_LEFT = 'ArrowLeft';
 export const DELETE = 'Delete';
+export const BACK_SPACE = 'Backspace';
 export const V_KEY = 'v';
 
 export const ACCEPTABLE_KEY = [

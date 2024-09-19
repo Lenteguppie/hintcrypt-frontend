@@ -59,16 +59,26 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  Hi {{ name }}, Je staat op het punt om een episch cadeau te krijgen. Voordat je het cadeau ontvangt, hebben we iedereen op jouw feest een link gestuurd met een opdracht. Voer je de opdracht correct uit, dan krijg je een gecodeerde letter, de positie ervan en een hint of een volgende opdracht om het karakter te ontcijferen. @if(requestLastHintAtCreator){ De
-  laatste hint krijg je van {{ creators }} wanneer je alle andere hints hebt
-  verkregen. }
+  Hi {{ name }}, Je staat op het punt om een episch cadeau te krijgen. Voordat
+  je het cadeau ontvangt, hebben we iedereen op jouw feest een link gestuurd met
+  een opdracht. Voer je de opdracht correct uit, dan krijg je een gecodeerde
+  letter, de positie ervan en een hint of een volgende opdracht om het karakter
+  te ontcijferen. @if(requestLastHintAtCreator){ De laatste hint krijg je van
+  {{ creators }} wanneer je alle andere hints hebt verkregen. }
 </mat-expansion-panel>
 
 <mat-expansion-panel>
   <mat-expansion-panel-header>
-    <mat-panel-title> <mat-icon>lock_open</mat-icon> Hoe kan ik de code ontcijferen? </mat-panel-title>
+    <mat-panel-title>
+      <mat-icon>lock_open</mat-icon> Hoe kan ik de code ontcijferen?
+    </mat-panel-title>
   </mat-expansion-panel-header>
-  De code is versleuteld door elke letter of cijfer een aantal posities naar links of rechts te verschuiven in de vaste volgorde van karakters: eerst de letters <em>"A-Z"</em> en daarna de cijfers <em>"0-9"</em>. Als je bij het decoderen het einde van de letters bereikt, tel je door bij de cijfers. Zodra je ook het laatste cijfer bereikt, begin je weer bij de letters vanaf "A". Dit zorgt ervoor dat je altijd binnen dezelfde reeks blijft, zonder onderbreking.
+  De code is versleuteld door elke letter of cijfer een aantal posities naar
+  links of rechts te verschuiven in de vaste volgorde van karakters: eerst de
+  letters <em>"A-Z"</em> en daarna de cijfers <em>"0-9"</em>. Als je bij het
+  decoderen het einde van de letters bereikt, tel je door bij de cijfers. Zodra
+  je ook het laatste cijfer bereikt, begin je weer bij de letters vanaf "A". Dit
+  zorgt ervoor dat je altijd binnen dezelfde reeks blijft, zonder onderbreking.
 </mat-expansion-panel>
 
 <mat-expansion-panel>
@@ -83,9 +93,18 @@
   {{ creators }}}.
 
   <ol>
-    <li>{{ name }} mag medespelers niet forceren om de hint te geven.</li>
+    <li>
+      {{ name }} mag medespelers niet forceren om de hint te geven of te tonen.
+    </li>
+    <li>{{ name }} mag medespelers niet omkopen om de hint te verkrijgen.</li>
     <li>{{ name }} mag niet proberen om de code te forceren.</li>
-    <li>De medespelers moeten eerlijk hun hint weggeven.</li>
+    <li>
+      {{ name }} mag medespelers niet forceren om de hint te geven of te tonen.
+    </li>
+    <li>
+      De medespelers moeten eerlijk hun hint weggeven als de opdracht juist is
+      uitgevoerd.
+    </li>
     <li>
       De medespelers mogen {{ name }} niet helpen met het uitvoeren van de
       opdracht.

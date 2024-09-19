@@ -1,6 +1,4 @@
-<div class="card-container">
-  <img />
-
+<div class="hint-container">
   <mat-card class="hint-card">
     <mat-card-header>
       @if(name){
@@ -46,26 +44,38 @@
       </mat-card-actions>
     </mat-card-content>
   </mat-card>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title> <mat-icon>rule</mat-icon> Spelregels </mat-panel-title>
+    </mat-expansion-panel-header>
+    Hieronder vind je alle spelregels. Als iemand zich niet aan deze regels
+    houdt, wordt hij of zij gestraft met een shotje. Het straf shotje telt niet
+    als het voltooien van een opdracht. Bij twijfel over het overtreden van een
+    regel, beslist de jury of de regel daadwerkelijk is gebroken. De juryleden
+    zijn: {{ creators }}.
+
+    <ol>
+      <li>
+        {{ targetName }} mag medespelers niet forceren om de hint te geven of te
+        tonen.
+      </li>
+      <li>
+        {{ targetName }} mag medespelers niet omkopen om de hint te verkrijgen.
+      </li>
+      <li>{{ targetName }} mag niet proberen om de code te forceren.</li>
+      <li>
+        {{ targetName }} mag medespelers niet forceren om de hint te geven of te
+        tonen.
+      </li>
+      <li>
+        De medespelers moeten eerlijk hun hint weggeven als de opdracht juist is
+        uitgevoerd.
+      </li>
+      <li>
+        De medespelers mogen {{ targetName }} niet helpen met het uitvoeren van
+        de opdracht.
+      </li>
+    </ol>
+  </mat-expansion-panel>
 </div>
-
-<mat-expansion-panel>
-  <mat-expansion-panel-header>
-    <mat-panel-title> <mat-icon>rule</mat-icon> Spelregels </mat-panel-title>
-  </mat-expansion-panel-header>
-  Hier onder staan alle spelregels beschreven. Mocht iemand zich niet aan de
-  spelregels houden, dan wordt dit bestraft met een
-  shotje. Bij enige twijfel of een regel gebroken
-  is wordt er iemand van de jury ingeschakeld om te kijken of de regel echt
-  gebroken is of niet. De jury bestaat uit:
-  {{ creators }}.
-
-  <ol>
-    <li>{{ name }} mag medespelers niet forceren om de hint te geven.</li>
-    <li>{{ name }} mag niet proberen om de code te forceren.</li>
-    <li>De medespelers moeten eerlijk hun hint weggeven.</li>
-    <li>
-      De medespelers mogen {{ name }} niet helpen met het uitvoeren van de
-      opdracht.
-    </li>
-  </ol>
-</mat-expansion-panel>

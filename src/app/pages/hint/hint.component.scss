@@ -1,5 +1,6 @@
-.card-container {
+.hint-container {
   display: flex;
+  flex-direction: column;
   justify-content: center; /* Centers horizontally */
   align-items: center; /* Centers vertically */
   height: 100vh; /* Full viewport height */
@@ -19,4 +20,8 @@ mat-card {
     margin-top: 10px;
     margin-bottom: 10px;
   }
+}
+
+mat-expansion-panel {
+  margin-top: 10px;
 }

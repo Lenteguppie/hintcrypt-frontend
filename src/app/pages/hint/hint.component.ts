@@ -8,6 +8,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-hint',
@@ -21,6 +22,7 @@ import { ActivatedRoute } from '@angular/router';
     CommonModule,
     MatIconModule,
     MatDividerModule,
+    MatExpansionModule
   ],
   templateUrl: './hint.component.html',
   styleUrl: './hint.component.scss',
@@ -36,6 +38,12 @@ export class HintComponent implements OnInit {
 
   // Other component variables
   rewardVisible: boolean = false;
+
+  private _creators: { name: string }[] = [
+    { name: 'Sascha' },
+    { name: 'Wilco' },
+    { name: 'Lara' },
+  ];
 
   constructor(private route: ActivatedRoute) {}
 
@@ -73,5 +81,23 @@ export class HintComponent implements OnInit {
 
   hideReward() {
     this.rewardVisible = false;
+  }
+
+  public get creators(): string {
+    if (this._creators.length === 1) {
+      return this._creators[0].name;
+    }
+
+    return this._creators.reduce((acc, creator, index) => {
+      if (index === this._creators.length - 1) {
+        return [acc, 'en', '' + creator.name].join(' ');
+      }
+
+      if (index > 0) {
+        return acc + ', ' + creator.name;
+      }
+
+      return creator.name;
+    }, '');
   }
 }

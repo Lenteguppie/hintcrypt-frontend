@@ -5,24 +5,25 @@
       <!-- Step 1: Receiver Form -->
       <mat-step [stepControl]="receiverForm">
         <form [formGroup]="receiverForm">
-          <ng-template matStepLabel>Receiver Information</ng-template>
+          <ng-template matStepLabel>Spel informatie</ng-template>
 
           <!-- Name field -->
           <mat-form-field>
-            <mat-label>Naam</mat-label>
+            <mat-label>Ontvanger</mat-label>
             <input matInput formControlName="name" required />
+            <mat-hint>Dit is de persoon die de code moet ontcijferen.</mat-hint>
           </mat-form-field>
 
           <!-- Code field -->
           <mat-form-field>
-            <mat-label>Code</mat-label>
+            <mat-label>Ontcijferde code</mat-label>
             <input matInput formControlName="code" required />
           </mat-form-field>
 
           <mat-slide-toggle
             labelPosition="before"
             formControlName="lastHintByCreators"
-            >Verberg laatste hint?</mat-slide-toggle
+            >Verberg de laatste hint?</mat-slide-toggle
           >
 
           <!-- Action buttons -->
@@ -54,8 +55,9 @@
               </mat-expansion-panel-header>
               <!-- Name field -->
               <mat-form-field>
-                <mat-label>Naam</mat-label>
+                <mat-label>Ontvanger</mat-label>
                 <input matInput formControlName="name" />
+
               </mat-form-field>
 
               <!-- Assignment field -->
@@ -66,7 +68,7 @@
 
               <!-- Encrypted Letter field -->
               <mat-form-field>
-                <mat-label>Gecodeerde Letter</mat-label>
+                <mat-label>Naam</mat-label>
                 <input matInput formControlName="encryptedLetter" required />
               </mat-form-field>
 
@@ -123,7 +125,7 @@
       <!-- Final step: Review and Submit -->
       <mat-step>
         <ng-template matStepLabel>Review and Submit</ng-template>
-        <p>All forms are valid and ready to submit.</p>
+        <p>Klik op submit om links en QR codes voor de deelnemers te genereren.</p>
         <button mat-button matStepperPrevious>Back</button>
         <button mat-button (click)="generate()" [disabled]="!areFormsValid()">
           Submit

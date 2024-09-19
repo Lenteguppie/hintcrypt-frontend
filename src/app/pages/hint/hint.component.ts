@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { RulesComponent } from '../../components/rules/rules.component';
 
 @Component({
   selector: 'app-hint',
@@ -22,14 +23,15 @@ import { MatExpansionModule } from '@angular/material/expansion';
     CommonModule,
     MatIconModule,
     MatDividerModule,
-    MatExpansionModule
+    MatExpansionModule,
+    RulesComponent,
   ],
   templateUrl: './hint.component.html',
   styleUrl: './hint.component.scss',
 })
 export class HintComponent implements OnInit {
   // Variables to hold the data
-  name?: string;
+  name: string = '';
   assignment: string = '';
   letterIndex: number = -1;
   encryptedLetter: string = '';
@@ -39,7 +41,7 @@ export class HintComponent implements OnInit {
   // Other component variables
   rewardVisible: boolean = false;
 
-  private _creators: { name: string }[] = [
+  public _creators: { name: string }[] = [
     { name: 'Sascha' },
     { name: 'Wilco' },
     { name: 'Lara' },
@@ -53,7 +55,7 @@ export class HintComponent implements OnInit {
     if (hintParamsEncoded) {
       try {
         // Decode from base64
-        const decodedString = atob(decodeURIComponent(hintParamsEncoded));
+        const decodedString = decodeURIComponent(atob(hintParamsEncoded));
         // Parse the JSON string
         const data = JSON.parse(decodedString);
         console.log('data', data);

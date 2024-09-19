@@ -138,7 +138,7 @@ export class GeneratorPageComponent implements OnInit {
 
   // Check if all forms in the formArray are valid
   areFormsValid(): boolean {
-    return this.hintsArray.valid && this.hintsArray.length == 15;
+    return this.receiverForm.valid && this.hintsValid;
   }
 
   // Function to load formArray values from localStorage into the formArray
@@ -161,7 +161,8 @@ export class GeneratorPageComponent implements OnInit {
       const jsonString = JSON.stringify(data);
 
       // Encode to base64
-      const base64Encoded = btoa(jsonString);
+
+      const base64Encoded = btoa(encodeURIComponent(jsonString));
 
       // URL encode the base64 string
       const urlEncoded = encodeURIComponent(base64Encoded);
@@ -219,6 +220,18 @@ export class GeneratorPageComponent implements OnInit {
 
   triggerFileInput() {
     this.fileInput.nativeElement.click();
+  }
+
+  public get hintsValid(): boolean {
+    if (!this.hintsForm.valid) {
+      return false;
+    }
+
+    if (this.receiverForm.get('lastHintByCreators')?.value === true) {
+      return this.hintsArray.length === 14;
+    }
+
+    return this.hintsArray.length === 15;
   }
 
   onFileSelected(event: any) {

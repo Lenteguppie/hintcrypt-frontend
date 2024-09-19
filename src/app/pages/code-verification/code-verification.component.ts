@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { Clipboard, ClipboardModule } from '@angular/cdk/clipboard';
 import { LocalStorageEnteredCodeKey } from './code-verification.models';
+import { RulesComponent } from '../../components/rules/rules.component';
 
 @Component({
   selector: 'app-code-verification',
@@ -21,12 +22,13 @@ import { LocalStorageEnteredCodeKey } from './code-verification.models';
     MatTooltipModule,
     MatExpansionModule,
     ClipboardModule,
+    RulesComponent,
   ],
   templateUrl: './code-verification.component.html',
   styleUrl: './code-verification.component.scss',
 })
 export class CodeVerificationComponent implements OnInit {
-  public name!: string;
+  public name: string = '';
   public correct_code!: string;
 
   public isCorrectLength = false;
@@ -39,7 +41,7 @@ export class CodeVerificationComponent implements OnInit {
   public isCodeVerified = false;
   public requestLastHintAtCreator = true;
 
-  private _creators: { name: string }[] = [
+  public _creators: { name: string }[] = [
     { name: 'Sascha' },
     { name: 'Wilco' },
     { name: 'Lara' },

@@ -1,0 +1,32 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title> <mat-icon>rule</mat-icon> Spelregels </mat-panel-title>
+  </mat-expansion-panel-header>
+  Hier onder staan alle spelregels beschreven. Mocht iemand zich niet aan de
+  spelregels houden, dan wordt dit bestraft met een shotje. Bij enige twijfel of
+  een regel gebroken is wordt er iemand van de jury ingeschakeld om te kijken of
+  de regel echt gebroken is of niet. De jury bestaat uit:
+  {{ jury }}.
+
+  <ol>
+    <li>
+      {{ name }} mag medespelers niet forceren om de hint te geven of te tonen.
+    </li>
+    <li>
+      {{ name }} mag medespelers niet omkopen om de hint te verkrijgen, tenzij
+      anders vermeld.
+    </li>
+    <li>{{ name }} mag niet proberen om de code te forceren.</li>
+    <li>
+      {{ name }} mag medespelers niet forceren om de hint te geven of te tonen.
+    </li>
+    <li>
+      De medespelers moeten eerlijk hun hint weggeven als de opdracht juist is
+      uitgevoerd.
+    </li>
+    <li>
+      De medespelers mogen {{ name }} niet helpen met het uitvoeren van de
+      opdracht, tenzij anders vermeld.
+    </li>
+  </ol>
+</mat-expansion-panel>

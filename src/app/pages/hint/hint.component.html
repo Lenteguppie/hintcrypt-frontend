@@ -33,7 +33,7 @@
         @if (!rewardVisible) {
         <button mat-raised-button color="primary" (click)="showReward()">
           <mat-icon>visibility</mat-icon>
-          Laat de hint zien
+          Toon hint
         </button>
         } @else {
         <button mat-raised-button color="primary" (click)="hideReward()">
@@ -47,35 +47,23 @@
 
   <mat-expansion-panel>
     <mat-expansion-panel-header>
-      <mat-panel-title> <mat-icon>rule</mat-icon> Spelregels </mat-panel-title>
+      <mat-panel-title>
+        <mat-icon>help_outline</mat-icon> Uitleg
+      </mat-panel-title>
     </mat-expansion-panel-header>
-    Hieronder vind je alle spelregels. Als iemand zich niet aan deze regels
-    houdt, wordt hij of zij gestraft met een shotje. Het straf shotje telt niet
-    als het voltooien van een opdracht. Bij twijfel over het overtreden van een
-    regel, beslist de jury of de regel daadwerkelijk is gebroken. De juryleden
-    zijn: {{ creators }}.
 
-    <ol>
-      <li>
-        {{ targetName }} mag medespelers niet forceren om de hint te geven of te
-        tonen.
-      </li>
-      <li>
-        {{ targetName }} mag medespelers niet omkopen om de hint te verkrijgen.
-      </li>
-      <li>{{ targetName }} mag niet proberen om de code te forceren.</li>
-      <li>
-        {{ targetName }} mag medespelers niet forceren om de hint te geven of te
-        tonen.
-      </li>
-      <li>
-        De medespelers moeten eerlijk hun hint weggeven als de opdracht juist is
-        uitgevoerd.
-      </li>
-      <li>
-        De medespelers mogen {{ targetName }} niet helpen met het uitvoeren van
-        de opdracht.
-      </li>
-    </ol>
+    Hi {{ name }}, Je vraagt je waarschijnlijk af: "Waarom krijg ik deze link?"
+    Nou, je staat op het punt om {{ targetName }} een geweldig cadeau te geven.
+    Wij, {{ creators }}, geven dit cadeau niet zonder slag of stoot weg. Om zijn
+    cadeau te bemachtigen, moet hij eerst een aantal opdrachten voltooien. We
+    willen jou vragen om ons hierbij te helpen. We hebben namelijk een code die
+    {{ targetName }} moet kraken, maar deze code is versleuteld.
+    {{ targetName }} komt vanavond bij jou langs om zijn opdracht uit te voeren.
+    Als {{ targetName }} deze opdracht correct heeft voltooid, mag je op de knop
+    <em>"Toon hint"</em> drukken. Je ziet dan jouw gecodeerde karakter en de
+    bijbehorende positie. Daarnaast ontvang je een hint of een volgende opdracht
+    waarmee {{ targetName }} zijn letter kan ontcijferen.
   </mat-expansion-panel>
+
+  <app-rules [name]="targetName"></app-rules>
 </div>

@@ -67,7 +67,7 @@ export class CodeVerificationComponent implements OnInit {
 
   public verify() {
     this.isCodeVerified = true;
-    this.isCodeCorrect = this._code === this.correct_code;
+    this.isCodeCorrect = this._code.toUpperCase() === this.correct_code.toUpperCase();
   }
 
   public copyCode() {

@@ -228,10 +228,10 @@ export class GeneratorPageComponent implements OnInit {
     }
 
     if (this.receiverForm.get('lastHintByCreators')?.value === true) {
-      return this.hintsArray.length === 14;
+      return this.hintsArray.length >= 14 && this.hintsArray.length < 15;
     }
 
-    return this.hintsArray.length === 15;
+    return this.hintsArray.length == 15;
   }
 
   onFileSelected(event: any) {

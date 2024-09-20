@@ -99,9 +99,11 @@ export class CodeVerificationComponent implements OnInit {
     if (hintParamsEncoded) {
       try {
         // Decode from base64
-        const decodedString = atob(decodeURIComponent(hintParamsEncoded));
+        const decodedString = decodeURIComponent(atob(hintParamsEncoded));
         // Parse the JSON string
         const data = JSON.parse(decodedString);
+
+        console.log("data",  data);
 
         // Assign the data to component variables
         this.name = data.name || null;
